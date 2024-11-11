@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:
+
+  ghost:
+    image: ghost:5-alpine
+    restart: always
+    ports:
+      - 8080:2368
+    environment:
+      database__client: mysql
+      database__connection__host: db
+      database__connection__user: root
+      database__connection__password: some_password
+      database__connection__database: ghost
+      # this url value is just an example, should be changed!
+      url: http://localhost:8080
+      # contrary to the default mentioned in the linked documentation, this image defaults to NODE_ENV=production (so development mode needs to be explicitly specified if desired)
+      NODE_ENV: development
+    volumes:
+      - ./src/casper:/var/lib/ghost/content/themes/casper
+      - ./src/source:/var/lib/ghost/content/themes/source
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: some_password
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+  db:
